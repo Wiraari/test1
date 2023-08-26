@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Melihat Alamat IP dengan JavaScript</title>
+  </head>
+  <body>
+    <h1>Alamat IP Anda:</h1>
+    <p id="ip"></p>
+
+    <script>
+      // Menggunakan layanan pihak ketiga untuk mendapatkan alamat IP
+      fetch("https://api.ipify.org?format=json")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("ip").textContent = data.ip;
+        })
+        .catch((error) => {
+          console.error("Terjadi kesalahan:", error);
+        });
+    </script>
+  </body>
+</html>
