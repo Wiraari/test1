@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Desktop Camera Viewer</title>
+  </head>
+  <body>
+    <video id="remoteVideo" autoplay></video>
+    <script>
+      const remoteVideo = document.getElementById("remoteVideo");
+      let remoteStream;
+      let pc;
+
+      // Terima offer dari perangkat mobile dan kirimkan answer
+      async function handleOffer(offer) {
+        pc = new RTCPeerConnection();
+
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            // Kirim ice candidate ke perangkat mobile
+          }
+        };
+
+        pc.ontrack = (event) => {
+          remoteStream = event.streams[0];
+          remoteVideo.srcObject = remoteStream;
+        };
+
+        await pc.setRemoteDescription(new RTCSessionDescription(offer));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+
+        // Kirim answer ke perangkat mobile
+      }
+
+      // Terima ice candidate dari perangkat mobile
+      function handleIceCandidate(candidate) {
+        pc.addIceCandidate(new RTCIceCandidate(candidate));
+      }
+    </script>
+  </body>
+</html>
