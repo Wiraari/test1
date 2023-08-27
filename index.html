@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Camera Stream</title>
+  </head>
+  <body>
+    <div id="content">
+      <button id="startButton">Start Camera</button>
+      <video id="camera" autoplay></video>
+      <video id="remoteVideo" autoplay></video>
+    </div>
+    <script>
+      const contentDiv = document.getElementById("content");
+      const startButton = document.getElementById("startButton");
+      const cameraVideo = document.getElementById("camera");
+      const remoteVideo = document.getElementById("remoteVideo");
+      let localStream;
+      let pc;
+
+      startButton.addEventListener("click", async () => {
+        if (isMobileDevice()) {
+          localStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+          cameraVideo.srcObject = localStream;
+          pc = new RTCPeerConnection();
+
+          localStream
+            .getTracks()
+            .forEach((track) => pc.addTrack(track, localStream));
+
+          pc.onicecandidate = (event) => {
+            if (event.candidate) {
+              // Kirim ice candidate ke perangkat desktop
+            }
+          };
+
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+
+          // Kirim offer ke perangkat desktop
+          // Contoh: Mengirim offer melalui WebSocket ke perangkat desktop
+        } else {
+          // Tampilkan elemen video untuk aliran dari perangkat mobile
+          remoteVideo.style.display = "block";
+          // Terima aliran video dari perangkat mobile menggunakan WebRTC
+          // Implementasikan pertukaran sinyal, answer, dan ice candidates
+        }
+      });
+
+      function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+      }
+    </script>
+  </body>
+</html>
